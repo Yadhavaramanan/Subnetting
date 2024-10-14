@@ -14,22 +14,16 @@ public class Subnetting {
         int prefix = sc.nextInt();
 
         // Calculate the subnet mask
-        int subnetMask = 0xFFFFFFFF << (32 - prefix);
+        int subnetMask = (int) (0xFFFFFFFFL << (32 - prefix));
 
         // Convert IP address to an integer
-        String[] octets = ip.split("\\.");
-        int ipAddress = (Integer.parseInt(octets[0]) << 24) |
-                        (Integer.parseInt(octets[1]) << 16) |
-                        (Integer.parseInt(octets[2]) << 8) |
-                        Integer.parseInt(octets[3]);
+        int ipAddress = ipToInt(ip);
 
-        // Calculate network address
+        // Calculate network and broadcast addresses
         int networkAddress = ipAddress & subnetMask;
-
-        // Calculate broadcast address
         int broadcastAddress = networkAddress | ~subnetMask;
 
-        // Print details
+        // Display details
         System.out.println("Subnet Mask: " + intToIp(subnetMask));
         System.out.println("Network Address: " + intToIp(networkAddress));
         System.out.println("Broadcast Address: " + intToIp(broadcastAddress));
@@ -38,7 +32,16 @@ public class Subnetting {
         System.out.println("Host Range: " + intToIp(networkAddress + 1) + " - " + intToIp(broadcastAddress - 1));
     }
 
-    // Convert an integer to an IP address string
+    // Convert an IP string to an integer
+    public static int ipToInt(String ip) {
+        String[] octets = ip.split("\\.");
+        return (Integer.parseInt(octets[0]) << 24) |
+               (Integer.parseInt(octets[1]) << 16) |
+               (Integer.parseInt(octets[2]) << 8) |
+               Integer.parseInt(octets[3]);
+    }
+
+    // Convert an integer to an IP string
     public static String intToIp(int ip) {
         return ((ip >> 24) & 0xFF) + "." +
                ((ip >> 16) & 0xFF) + "." +
